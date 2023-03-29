@@ -20,68 +20,90 @@ import com.google.firebase.auth.UserProfileChangeRequest;
 
 import edu.uncc.hw06.databinding.FragmentSignUpBinding;
 
-public class SignUpFragment extends Fragment {
-    public SignUpFragment() {
+public class SignUpFragment extends Fragment
+{
+    public SignUpFragment()
+    {
         // Required empty public constructor
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
     }
 
     FragmentSignUpBinding binding;
     FirebaseAuth mAuth = FirebaseAuth.getInstance();
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
         binding = FragmentSignUpBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
+    {
         super.onViewCreated(view, savedInstanceState);
-        binding.buttonCancel.setOnClickListener(new View.OnClickListener() {
+        binding.buttonCancel.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 mListener.login();
             }
         });
-        binding.buttonSignup.setOnClickListener(new View.OnClickListener() {
+        binding.buttonSignup.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 String name = binding.editTextName.getText().toString();
                 String email = binding.editTextEmail.getText().toString();
                 String password = binding.editTextPassword.getText().toString();
 
-                if(name.isEmpty()){
+                if (name.isEmpty())
+                {
                     Toast.makeText(getActivity(), "Enter valid name!", Toast.LENGTH_SHORT).show();
-                } else if(email.isEmpty()){
+                } else if (email.isEmpty())
+                {
                     Toast.makeText(getActivity(), "Enter valid email!", Toast.LENGTH_SHORT).show();
-                } else if (password.isEmpty()){
+                } else if (password.isEmpty())
+                {
                     Toast.makeText(getActivity(), "Enter valid password!", Toast.LENGTH_SHORT).show();
-                } else {
-                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                } else
+                {
+                    mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>()
+                    {
                         @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(task.isSuccessful()){
+                        public void onComplete(@NonNull Task<AuthResult> task)
+                        {
+                            if (task.isSuccessful())
+                            {
                                 //update FirebaseUser profile firebase
                                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
                                         .setDisplayName(name)
                                         .build();
 
-                                mAuth.getCurrentUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                mAuth.getCurrentUser().updateProfile(profileUpdates).addOnCompleteListener(new OnCompleteListener<Void>()
+                                {
                                     @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if(task.isSuccessful()){
+                                    public void onComplete(@NonNull Task<Void> task)
+                                    {
+                                        if (task.isSuccessful())
+                                        {
                                             mListener.authSuccessful();
-                                        } else {
+                                        } else
+                                        {
                                             Toast.makeText(getActivity(), "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                         }
                                     }
                                 });
-                            } else {
+                            } else
+                            {
                                 Toast.makeText(getActivity(), "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -96,12 +118,16 @@ public class SignUpFragment extends Fragment {
     SignUpListener mListener;
 
     @Override
-    public void onAttach(@NonNull Context context) {
+    public void onAttach(@NonNull Context context)
+    {
         super.onAttach(context);
         mListener = (SignUpListener) context;
     }
-    interface SignUpListener {
+
+    interface SignUpListener
+    {
         void login();
+
         void authSuccessful();
     }
 }

@@ -33,4 +33,16 @@
         app:layout_constraintStart_toStartOf="parent"
         tools:listitem="@layout/forum_row_item"
         app:layout_constraintTop_toBottomOf="@+id/buttonLogout" />
+
+    <TextView
+        android:id="@+id/textViewWelcome"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:text="Welcome!"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonLogout"
+        app:layout_constraintEnd_toStartOf="@+id/buttonCreateForum"
+        app:layout_constraintStart_toEndOf="@+id/buttonLogout"
+        app:layout_constraintTop_toTopOf="@+id/buttonLogout" />
 </androidx.constraintlayout.widget.ConstraintLayout>

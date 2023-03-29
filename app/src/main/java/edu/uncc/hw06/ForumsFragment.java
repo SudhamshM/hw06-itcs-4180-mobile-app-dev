@@ -22,6 +22,7 @@ import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
@@ -140,9 +141,35 @@ public class ForumsFragment extends Fragment
             public void setupUI(Forum forum)
             {
                 this.mForum = forum;
+                mBinding.imageViewLike.setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                       if (mBinding.imageViewLike.getDrawable().getConstantState() == (getResources().getDrawable(R.drawable.like_favorite).getConstantState()))
+                       {
+                           Log.d(TAG, "onClick: removing like");
+                           mBinding.imageViewLike.setImageResource(R.drawable.like_not_favorite);
+                       }
+                       else
+                       {
+                           Log.d(TAG, "onClick: adding like");
+                           Log.d(TAG, "onClick: " + mBinding.imageViewLike.getDrawable());
+                           mBinding.imageViewLike.setImageResource(R.drawable.like_favorite);
+                       }
+                    }
+                });
                 if (mForum.getOwnerID().equals(mAuth.getCurrentUser().getUid()))
                 {
                     mBinding.imageViewDelete.setVisibility(View.VISIBLE);
+                    mBinding.imageViewDelete.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View view)
+                        {
+                            deleteForum();
+                        }
+                    });
                 }
                 else
                 {
@@ -151,6 +178,7 @@ public class ForumsFragment extends Fragment
                 mBinding.textViewForumCreatedBy.setText(mForum.getAuthor());
                 mBinding.textViewForumTitle.setText(mForum.getTitle());
                 mBinding.textViewForumText.setText(mForum.getContent());
+
             }
 
             private void deleteForum()

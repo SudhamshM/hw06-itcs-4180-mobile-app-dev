@@ -152,10 +152,44 @@ public class ForumsFragment extends Fragment
                        {
                            Log.d(TAG, "onClick: removing like");
                            mBinding.imageViewLike.setImageResource(R.drawable.like_not_favorite);
+                           mForum.getLikedByUsersList().remove(mAuth.getCurrentUser().getUid());
+                           db.collection("forums").document(forum.getDocID())
+                                   .update("likedByUsersList", mForum.getLikedByUsersList())
+                                   .addOnSuccessListener(new OnSuccessListener<Void>()
+                                   {
+                                       @Override
+                                       public void onSuccess(Void unused)
+                                       {
+                                           Log.d(TAG, "onSuccess: unlike post from db");
+                                       }
+                                   }).addOnFailureListener(new OnFailureListener()
+                                   {
+                                       @Override
+                                       public void onFailure(@NonNull Exception e)
+                                       {
+                                           Log.d(TAG, "onFailure: fail unlike post from db");
+                                       }
+                                   });
                        }
                        else
                        {
-                           Log.d(TAG, "onClick: adding like");
+                           mForum.getLikedByUsersList().add(mAuth.getCurrentUser().getUid());
+                           db.collection("forums").document(forum.getDocID()).
+                                   update("likedByUsersList", mForum.getLikedByUsersList()).addOnSuccessListener(new OnSuccessListener<Void>()
+                                   {
+                                       @Override
+                                       public void onSuccess(Void unused)
+                                       {
+                                           Log.d(TAG, "onSuccess: liked post to db");
+                                       }
+                                   }).addOnFailureListener(new OnFailureListener()
+                                   {
+                                       @Override
+                                       public void onFailure(@NonNull Exception e)
+                                       {
+                                           Log.d(TAG, "onFailure: fail like post to db");
+                                       }
+                                   });
                            mBinding.imageViewLike.setImageResource(R.drawable.like_favorite);
                        }
                     }
@@ -197,7 +231,7 @@ public class ForumsFragment extends Fragment
                 {
                     date = forum.getGoodTime();
                 }
-                String fullDateLikeInfo = date + " | " + mForum.getLikeCount() + " Likes";
+                String fullDateLikeInfo = date + " | " + mForum.getLikedByUsersList().size() + " Likes";
                 mBinding.textViewForumLikesDate.setText(fullDateLikeInfo);
             }
 

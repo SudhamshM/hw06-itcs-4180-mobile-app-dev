@@ -26,6 +26,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 
 import edu.uncc.hw06.databinding.ForumRowItemBinding;
 import edu.uncc.hw06.databinding.FragmentForumsBinding;
@@ -153,8 +154,12 @@ public class ForumsFragment extends Fragment
                            Log.d(TAG, "onClick: removing like");
                            mBinding.imageViewLike.setImageResource(R.drawable.like_not_favorite);
                            mForum.getLikedByUsersList().remove(mAuth.getCurrentUser().getUid());
+                           HashMap<String, Object> data = new HashMap<>();
+                           data.put("likeCount", String.valueOf(mForum.getLikedByUsersList().size()));
+                           data.put("likedByUsersList", mForum.getLikedByUsersList());
+
                            db.collection("forums").document(forum.getDocID())
-                                   .update("likedByUsersList", mForum.getLikedByUsersList())
+                                   .update(data)
                                    .addOnSuccessListener(new OnSuccessListener<Void>()
                                    {
                                        @Override
@@ -174,8 +179,11 @@ public class ForumsFragment extends Fragment
                        else
                        {
                            mForum.getLikedByUsersList().add(mAuth.getCurrentUser().getUid());
+                           HashMap<String, Object> data = new HashMap<>();
+                           data.put("likeCount", String.valueOf(mForum.getLikedByUsersList().size()));
+                           data.put("likedByUsersList", mForum.getLikedByUsersList());
                            db.collection("forums").document(forum.getDocID()).
-                                   update("likedByUsersList", mForum.getLikedByUsersList()).addOnSuccessListener(new OnSuccessListener<Void>()
+                                   update(data).addOnSuccessListener(new OnSuccessListener<Void>()
                                    {
                                        @Override
                                        public void onSuccess(Void unused)

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
@@ -13,6 +14,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -73,9 +76,10 @@ public class ForumsFragment extends Fragment
         });
         adapter = new ForumsAdapter();
         binding.recyclerView.setAdapter(adapter);
+        binding.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         // get data from db with snapshot
-        db.collection("forums").addSnapshotListener(getActivity(), new EventListener<QuerySnapshot>()
+        db.collection("forums").addSnapshotListener(new EventListener<QuerySnapshot>()
         {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error)
@@ -147,6 +151,25 @@ public class ForumsFragment extends Fragment
                 mBinding.textViewForumCreatedBy.setText(mForum.getAuthor());
                 mBinding.textViewForumTitle.setText(mForum.getTitle());
                 mBinding.textViewForumText.setText(mForum.getContent());
+            }
+
+            private void deleteForum()
+            {
+                db.collection("forums").document(mForum.getDocID()).delete().addOnSuccessListener(new OnSuccessListener<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void unused)
+                    {
+                        Log.d(TAG, "onSuccess: deleted forum");
+                    }
+                }).addOnFailureListener(new OnFailureListener()
+                {
+                    @Override
+                    public void onFailure(@NonNull Exception e)
+                    {
+                        Log.d(TAG, "onFailure: fail delete forum " + e.getMessage());
+                    }
+                });
             }
         }
     }

@@ -4,7 +4,7 @@ import com.google.firebase.Timestamp;
 
 public class Forum
 {
-    String title, author, content, likeCount, commentCount, ownerID;
+    String title, author, content, likeCount, commentCount, ownerID, docID;
     Timestamp timestamp;
 
     public String getTitle()
@@ -79,5 +79,15 @@ public class Forum
     public void setTimestamp(Timestamp timestamp)
     {
         this.timestamp = timestamp;
+    }
+
+    public String getDocID()
+    {
+        return docID;
+    }
+
+    public void setDocID(String docID)
+    {
+        this.docID = docID;
     }
 }

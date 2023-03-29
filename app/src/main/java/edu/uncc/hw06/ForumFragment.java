@@ -150,7 +150,7 @@ public class ForumFragment extends Fragment
             }
         });
 
-        db.collection("comments").addSnapshotListener(new EventListener<QuerySnapshot>()
+        db.collection("comments").whereEqualTo("postID", mForum.getDocID()).addSnapshotListener(new EventListener<QuerySnapshot>()
         {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error)

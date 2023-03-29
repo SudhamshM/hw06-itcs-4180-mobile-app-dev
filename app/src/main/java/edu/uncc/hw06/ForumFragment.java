@@ -121,14 +121,15 @@ public class ForumFragment extends Fragment
                     Toast.makeText(getActivity(), "Please enter a comment.", Toast.LENGTH_SHORT).show();
                     return;
                 }
-
-                DocumentReference docRef = db.collection("comments").document(mForum.getDocID());
+                binding.editTextComment.setText("");
+                DocumentReference docRef = db.collection("comments").document();
                 HashMap<String, Object> data = new HashMap<>();
                 data.put("content", content);
                 data.put("postID", mForum.getDocID());
                 data.put("docID", docRef.getId());
                 data.put("ownerID", mAuth.getCurrentUser().getUid());
                 data.put("timestamp", FieldValue.serverTimestamp());
+                data.put("author", mAuth.getCurrentUser().getDisplayName());
 
                 docRef.set(data).addOnSuccessListener(new OnSuccessListener<Void>()
                 {
@@ -167,6 +168,7 @@ public class ForumFragment extends Fragment
                     mComments.add(comment);
                 }
                 adapter.notifyDataSetChanged();
+                binding.textViewCommentsCount.setText(mComments.size() + " Comments");
             }
         });
     }
@@ -211,6 +213,38 @@ public class ForumFragment extends Fragment
                 binding.textViewCommentText.setText(comment.getContent());
                 binding.textViewCommentCreatedAt.setText(comment.getCommentTime());
                 binding.textViewCommentCreatedBy.setText(comment.getAuthor());
+
+                if (comment.getOwnerID().equals(mAuth.getCurrentUser().getUid()))
+                {
+                    binding.imageViewDelete.setVisibility(View.VISIBLE);
+                    binding.imageViewDelete.setOnClickListener(new View.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(View view)
+                        {
+                            db.collection("comments").document(comment.getDocID()).delete()
+                                    .addOnSuccessListener(new OnSuccessListener<Void>()
+                                    {
+                                        @Override
+                                        public void onSuccess(Void unused)
+                                        {
+                                            Log.d(TAG, "onSuccess: success delete comment: ");
+                                        }
+                                    }).addOnFailureListener(new OnFailureListener()
+                                    {
+                                        @Override
+                                        public void onFailure(@NonNull Exception e)
+                                        {
+                                            Log.d(TAG, "onFailure: fail delete comment: " + e.getMessage());
+                                        }
+                                    });
+                        }
+                    });
+                }
+                else
+                {
+                    binding.imageViewDelete.setVisibility(View.INVISIBLE);
+                }
 
 
             }

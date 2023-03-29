@@ -49,4 +49,34 @@ public class Comment
         }
         return "";
     }
+
+    public String getOwnerID()
+    {
+        return ownerID;
+    }
+
+    public void setOwnerID(String ownerID)
+    {
+        this.ownerID = ownerID;
+    }
+
+    public String getPostID()
+    {
+        return postID;
+    }
+
+    public void setPostID(String postID)
+    {
+        this.postID = postID;
+    }
+
+    public String getDocID()
+    {
+        return docID;
+    }
+
+    public void setDocID(String docID)
+    {
+        this.docID = docID;
+    }
 }

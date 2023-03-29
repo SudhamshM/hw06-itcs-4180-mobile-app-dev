@@ -40,6 +40,7 @@ public class ForumsFragment extends Fragment
     public static final String TAG = "hw06";
     private ArrayList<Forum> mForums = new ArrayList<>();
     private ForumsAdapter adapter;
+    ListenerRegistration listenerRegistration;
 
     public ForumsFragment()
     {
@@ -83,7 +84,7 @@ public class ForumsFragment extends Fragment
         binding.recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         // get data from db with snapshot
-        db.collection("forums").addSnapshotListener(new EventListener<QuerySnapshot>()
+       listenerRegistration = db.collection("forums").addSnapshotListener(new EventListener<QuerySnapshot>()
         {
             @Override
             public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error)
@@ -278,7 +279,6 @@ public class ForumsFragment extends Fragment
 
 
     ForumsListener mListener;
-    ListenerRegistration listenerRegistration;
 
     @Override
     public void onDestroyView()

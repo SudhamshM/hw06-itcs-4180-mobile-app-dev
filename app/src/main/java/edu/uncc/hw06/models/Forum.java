@@ -1,8 +1,11 @@
 package edu.uncc.hw06.models;
 
+import com.google.firebase.Timestamp;
+
 public class Forum
 {
     String title, author, content, likeCount, commentCount, ownerID;
+    Timestamp timestamp;
 
     public String getTitle()
     {
@@ -66,5 +69,15 @@ public class Forum
 
     public Forum()
     {
+    }
+
+    public Timestamp getTimestamp()
+    {
+        return timestamp;
+    }
+
+    public void setTimestamp(Timestamp timestamp)
+    {
+        this.timestamp = timestamp;
     }
 }

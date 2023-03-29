@@ -19,13 +19,16 @@ import com.google.firebase.auth.FirebaseAuth;
 
 import edu.uncc.hw06.databinding.FragmentLoginBinding;
 
-public class LoginFragment extends Fragment {
-    public LoginFragment() {
+public class LoginFragment extends Fragment
+{
+    public LoginFragment()
+    {
         // Required empty public constructor
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
     }
 
@@ -33,32 +36,43 @@ public class LoginFragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+                             Bundle savedInstanceState)
+    {
         binding = FragmentLoginBinding.inflate(inflater, container, false);
         return binding.getRoot();
     }
 
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState)
+    {
         super.onViewCreated(view, savedInstanceState);
 
-        binding.buttonLogin.setOnClickListener(new View.OnClickListener() {
+        binding.buttonLogin.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 String email = binding.editTextEmail.getText().toString();
                 String password = binding.editTextPassword.getText().toString();
-                if(email.isEmpty()){
+                if (email.isEmpty())
+                {
                     Toast.makeText(getActivity(), "Enter valid email!", Toast.LENGTH_SHORT).show();
-                } else if (password.isEmpty()){
+                } else if (password.isEmpty())
+                {
                     Toast.makeText(getActivity(), "Enter valid password!", Toast.LENGTH_SHORT).show();
-                } else {
+                } else
+                {
 
-                    FirebaseAuth.getInstance().signInWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    FirebaseAuth.getInstance().signInWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>()
+                    {
                         @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(task.isSuccessful()){
+                        public void onComplete(@NonNull Task<AuthResult> task)
+                        {
+                            if (task.isSuccessful())
+                            {
                                 mListener.authSuccessful();
-                            } else {
+                            } else
+                            {
                                 Toast.makeText(getActivity(), task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -67,9 +81,11 @@ public class LoginFragment extends Fragment {
             }
         });
 
-        binding.buttonCreateNewAccount.setOnClickListener(new View.OnClickListener() {
+        binding.buttonCreateNewAccount.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 mListener.createNewAccount();
             }
         });
@@ -80,17 +96,22 @@ public class LoginFragment extends Fragment {
     LoginListener mListener;
 
     @Override
-    public void onAttach(@NonNull Context context) {
+    public void onAttach(@NonNull Context context)
+    {
         super.onAttach(context);
-        if(context instanceof LoginListener){
+        if (context instanceof LoginListener)
+        {
             mListener = (LoginListener) context;
-        } else {
+        } else
+        {
             throw new RuntimeException(context.toString() + " must implement LoginListener");
         }
     }
 
-    interface LoginListener {
+    interface LoginListener
+    {
         void createNewAccount();
+
         void authSuccessful();
     }
 }

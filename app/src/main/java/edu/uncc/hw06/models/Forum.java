@@ -4,9 +4,10 @@ import com.google.firebase.Timestamp;
 
 import org.checkerframework.checker.units.qual.A;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Forum
+public class Forum implements Serializable
 {
     String title, author, content, likeCount, commentCount, ownerID, docID;
     Timestamp timestamp;

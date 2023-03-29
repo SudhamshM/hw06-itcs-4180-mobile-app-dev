@@ -6,6 +6,8 @@ import android.os.Bundle;
 
 import com.google.firebase.auth.FirebaseAuth;
 
+import edu.uncc.hw06.models.Forum;
+
 public class MainActivity extends AppCompatActivity
         implements LoginFragment.LoginListener,
         SignUpFragment.SignUpListener,
@@ -76,6 +78,15 @@ public class MainActivity extends AppCompatActivity
         FirebaseAuth.getInstance().signOut();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.rootView, new LoginFragment())
+                .addToBackStack(null)
+                .commit();
+    }
+
+    @Override
+    public void goToForum(Forum forum)
+    {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.rootView, ForumFragment.newInstance(forum))
                 .addToBackStack(null)
                 .commit();
     }

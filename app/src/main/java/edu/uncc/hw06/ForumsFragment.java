@@ -21,6 +21,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.ListenerRegistration;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
@@ -230,6 +231,16 @@ public class ForumsFragment extends Fragment
                 {
                     mBinding.imageViewDelete.setVisibility(View.INVISIBLE);
                 }
+
+                // go to forum page on click listener
+                mBinding.getRoot().setOnClickListener(new View.OnClickListener()
+                {
+                    @Override
+                    public void onClick(View view)
+                    {
+                        mListener.goToForum(forum);
+                    }
+                });
                 Log.d(TAG, "setupUI: forum: " + forum);
                 mBinding.textViewForumCreatedBy.setText(forum.getAuthor());
                 mBinding.textViewForumTitle.setText(forum.getTitle());
@@ -267,6 +278,17 @@ public class ForumsFragment extends Fragment
 
 
     ForumsListener mListener;
+    ListenerRegistration listenerRegistration;
+
+    @Override
+    public void onDestroyView()
+    {
+        super.onDestroyView();
+        if (listenerRegistration != null)
+        {
+            listenerRegistration.remove();
+        }
+    }
 
     @Override
     public void onAttach(@NonNull Context context)
@@ -280,5 +302,7 @@ public class ForumsFragment extends Fragment
         void createNewForum();
 
         void logout();
+
+        void goToForum(Forum forum);
     }
 }

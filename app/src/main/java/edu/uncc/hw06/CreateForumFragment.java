@@ -16,10 +16,14 @@ import android.widget.Toast;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import org.checkerframework.checker.units.qual.A;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import edu.uncc.hw06.databinding.FragmentCreateForumBinding;
@@ -73,16 +77,20 @@ public class CreateForumFragment extends Fragment
                     Toast.makeText(getActivity(), "Description cannot be empty", Toast.LENGTH_SHORT).show();
                 } else
                 {
+                    FirebaseUser mUser = mAuth.getCurrentUser();
                     DocumentReference docRef = db.collection("forums").document();
                     HashMap<String, Object> data = new HashMap<>();
                     data.put("title", title);
                     data.put("content", desc);
-                    data.put("author", mAuth.getCurrentUser().getDisplayName());
-                    data.put("ownerID", mAuth.getCurrentUser().getUid());
+                    data.put("author", mUser.getDisplayName());
+                    data.put("ownerID", mUser.getUid());
                     data.put("likeCount", "0");
                     data.put("commentCount", "0");
                     data.put("timestamp", FieldValue.serverTimestamp());
                     data.put("docID", docRef.getId());
+                    ArrayList<String> likedUsersList = new ArrayList<>();
+                    //likedUsersList.add(mUser.getUid());
+                    data.put("likedByUsersList", likedUsersList);
                     docRef.set(data).addOnSuccessListener(new OnSuccessListener<Void>()
                     {
                         @Override

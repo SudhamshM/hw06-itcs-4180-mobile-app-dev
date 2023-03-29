@@ -2,10 +2,26 @@ package edu.uncc.hw06.models;
 
 import com.google.firebase.Timestamp;
 
+import org.checkerframework.checker.units.qual.A;
+
+import java.util.ArrayList;
+
 public class Forum
 {
     String title, author, content, likeCount, commentCount, ownerID, docID;
     Timestamp timestamp;
+
+    ArrayList<String> likedByUsersList = new ArrayList<>();
+
+    public ArrayList<String> getLikedByUsersList()
+    {
+        return likedByUsersList;
+    }
+
+    public void setLikedByUsersList(ArrayList<String> likedByUsersList)
+    {
+        this.likedByUsersList = likedByUsersList;
+    }
 
     public String getTitle()
     {
@@ -76,6 +92,11 @@ public class Forum
         return timestamp;
     }
 
+    public String getGoodTime()
+    {
+        return this.timestamp.toDate().toLocaleString();
+    }
+
     public void setTimestamp(Timestamp timestamp)
     {
         this.timestamp = timestamp;
@@ -89,5 +110,21 @@ public class Forum
     public void setDocID(String docID)
     {
         this.docID = docID;
+    }
+
+    @Override
+    public String toString()
+    {
+        return "Forum{" +
+                "title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", content='" + content + '\'' +
+                ", likeCount='" + likeCount + '\'' +
+                ", commentCount='" + commentCount + '\'' +
+                ", ownerID='" + ownerID + '\'' +
+                ", docID='" + docID + '\'' +
+                ", timestamp=" + timestamp +
+                ", likedByUsersList=" + likedByUsersList +
+                '}';
     }
 }

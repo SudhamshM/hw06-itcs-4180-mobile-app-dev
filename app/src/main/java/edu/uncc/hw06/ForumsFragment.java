@@ -25,6 +25,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 import edu.uncc.hw06.databinding.ForumRowItemBinding;
 import edu.uncc.hw06.databinding.FragmentForumsBinding;
@@ -141,6 +142,7 @@ public class ForumsFragment extends Fragment
             public void setupUI(Forum forum)
             {
                 this.mForum = forum;
+                //  like button on click listener
                 mBinding.imageViewLike.setOnClickListener(new View.OnClickListener()
                 {
                     @Override
@@ -154,11 +156,22 @@ public class ForumsFragment extends Fragment
                        else
                        {
                            Log.d(TAG, "onClick: adding like");
-                           Log.d(TAG, "onClick: " + mBinding.imageViewLike.getDrawable());
                            mBinding.imageViewLike.setImageResource(R.drawable.like_favorite);
                        }
                     }
                 });
+
+                // like button type depending on checked or not
+                if (forum.getLikedByUsersList().contains(mAuth.getCurrentUser().getUid()))
+                {
+                    mBinding.imageViewLike.setImageResource(R.drawable.like_favorite);
+                }
+                else
+                {
+                    mBinding.imageViewLike.setImageResource(R.drawable.like_not_favorite);
+                }
+
+                // delete button visibility, on click listener
                 if (mForum.getOwnerID().equals(mAuth.getCurrentUser().getUid()))
                 {
                     mBinding.imageViewDelete.setVisibility(View.VISIBLE);
@@ -175,10 +188,17 @@ public class ForumsFragment extends Fragment
                 {
                     mBinding.imageViewDelete.setVisibility(View.INVISIBLE);
                 }
-                mBinding.textViewForumCreatedBy.setText(mForum.getAuthor());
-                mBinding.textViewForumTitle.setText(mForum.getTitle());
-                mBinding.textViewForumText.setText(mForum.getContent());
-
+                Log.d(TAG, "setupUI: forum: " + forum);
+                mBinding.textViewForumCreatedBy.setText(forum.getAuthor());
+                mBinding.textViewForumTitle.setText(forum.getTitle());
+                mBinding.textViewForumText.setText(forum.getContent());
+                String date = "";
+                if (forum.getTimestamp() != null)
+                {
+                    date = forum.getGoodTime();
+                }
+                String fullDateLikeInfo = date + " | " + mForum.getLikeCount() + " Likes";
+                mBinding.textViewForumLikesDate.setText(fullDateLikeInfo);
             }
 
             private void deleteForum()

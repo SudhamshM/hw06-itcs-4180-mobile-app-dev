@@ -8,14 +8,27 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import org.checkerframework.checker.units.qual.A;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import edu.uncc.hw06.databinding.CommentRowItemBinding;
 import edu.uncc.hw06.databinding.FragmentForumBinding;
@@ -33,11 +46,15 @@ public class ForumFragment extends Fragment
 
     private ArrayList<Comment> mComments = new ArrayList<>();
     private static final String ARG_PARAM1 = "forum1";
+    public static final String TAG = "hw06";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private Forum mForum;
     private ForumCommentAdapter adapter;
+
+    private FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     public ForumFragment()
     {
@@ -104,6 +121,52 @@ public class ForumFragment extends Fragment
                     Toast.makeText(getActivity(), "Please enter a comment.", Toast.LENGTH_SHORT).show();
                     return;
                 }
+
+                DocumentReference docRef = db.collection("comments").document(mForum.getDocID());
+                HashMap<String, Object> data = new HashMap<>();
+                data.put("content", content);
+                data.put("postID", mForum.getDocID());
+                data.put("docID", docRef.getId());
+                data.put("ownerID", mAuth.getCurrentUser().getUid());
+                data.put("timestamp", FieldValue.serverTimestamp());
+
+                docRef.set(data).addOnSuccessListener(new OnSuccessListener<Void>()
+                {
+                    @Override
+                    public void onSuccess(Void unused)
+                    {
+                        Log.d(TAG, "onSuccess: add comment");
+                    }
+                }).addOnFailureListener(new OnFailureListener()
+                {
+                    @Override
+                    public void onFailure(@NonNull Exception e)
+                    {
+                        Log.d(TAG, "onFailure: add comment failed:" + e.getMessage());
+                    }
+                });
+
+            }
+        });
+
+        db.collection("comments").addSnapshotListener(new EventListener<QuerySnapshot>()
+        {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error)
+            {
+                mComments.clear();
+                if (error != null)
+                {
+                    Log.d(TAG, "onEvent: error: " + error.getMessage());
+                    return;
+                }
+
+                for (DocumentSnapshot doc: value)
+                {
+                    Comment comment = doc.toObject(Comment.class);
+                    mComments.add(comment);
+                }
+                adapter.notifyDataSetChanged();
             }
         });
     }
@@ -148,6 +211,8 @@ public class ForumFragment extends Fragment
                 binding.textViewCommentText.setText(comment.getContent());
                 binding.textViewCommentCreatedAt.setText(comment.getCommentTime());
                 binding.textViewCommentCreatedBy.setText(comment.getAuthor());
+
+
             }
         }
     }

@@ -89,6 +89,7 @@ public class CreateForumFragment extends Fragment
                     data.put("timestamp", FieldValue.serverTimestamp());
                     data.put("docID", docRef.getId());
                     ArrayList<String> likedUsersList = new ArrayList<>();
+                    ArrayList<String> commentsList = new ArrayList<>();
                     //likedUsersList.add(mUser.getUid());
                     data.put("likedByUsersList", likedUsersList);
                     docRef.set(data).addOnSuccessListener(new OnSuccessListener<Void>()
